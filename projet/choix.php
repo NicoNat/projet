@@ -66,7 +66,7 @@ $i = 0;
 					echo $nbReponses;
 					echo '/';
 					echo $nbQuestions;
-					echo " <a href=\"valider.php\">Voir réponse</a>";
+					echo " <a href=\"valider.php?id_questionnaire=".$i."\">Voir réponse</a>";
 			}
 			elseif($nbReponses < $nbQuestions) //Si toutes les questions n'ont pas leurs réponses, on donne accès
 			{

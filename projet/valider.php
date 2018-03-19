@@ -22,18 +22,21 @@ session_start();
 
     <body>
 		<?php 	
-				$rep = $bdd->prepare('SELECT * FROM REPONSE WHERE id_utilisateur = ? ORDER BY id_question');
-				// Ajouter ID questionnaires
-				$rep->execute(array($_SESSION['id']));
-
-				while($donnees = $rep->fetch())
-				{
+				$requete="SELECT * FROM REPONSE JOIN QUESTION ON QUESTION.id_question=REPONSE.id_question WHERE id_utilisateur = ".$_SESSION['id']." AND id_questionnaire={$_GET["id_questionnaire"]} ORDER BY REPONSE.id_question";
+				$rep = $bdd->query($requete);
+				$fini=false;
+				while(!$fini){
+				$reponses=$rep->fetchObject();
+				if($reponses==false){
+					$fini=true;
+				}else{
 		?>
 					<p>
-						<strong>Question <?php echo $donnees['id_question']; ?></strong> : <?php echo $donnees['reponse']; ?><br />
+						<strong>Question <?php echo $reponses->id_question ?></strong> : <?php echo $reponses->reponse ?><br />
 					</p>
 		<?php
-				}				
+				}
+			}				
 			$rep->closeCursor(); // Termine le traitement de la requête
 		?>
     </body>
