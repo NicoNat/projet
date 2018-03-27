@@ -123,7 +123,7 @@ $i = 1;
 				SautLigneDansPhp(1);
 				echo '<a href="modifier.php?id_questionnaire='.$id_questionnaire[$i].'">Modifier</a>';
 				echo '/';
-				echo "<a href='supprimer.php?id_questionnaire={$id_questionnaire[$i]->id}'>Supprimer</a>";
+				echo '<a href="supprimer.php?id_questionnaire='.$id_questionnaire[$i].'">Supprimer</a>';
 				SautLigneDansPhp(2);
 				$i++;
 			}
