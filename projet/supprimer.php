@@ -30,7 +30,7 @@ $i = 0;
 		
 		if($_SESSION['prof'] == 1)
 		{
-			$resultat = $bdd -> query("DELETE FROM QUESTIONNAIRE WHERE id =".$_GET['id_questionnaire']);
+			$resultat = $bdd -> query("DELETE FROM QUESTION WHERE id_questionnaire IN (SELECT id_questionnaire FROM QUESTIONNAIRE WHERE id_questionnaire=".$_GET['id_questionnaire']."); DELETE FROM QUESTIONNAIRE WHERE id_questionnaire =".$_GET['id_questionnaire']);
 			if($resultat == FALSE){
 				die("Erreur : suppression non effectuée");
 			}
