@@ -41,6 +41,7 @@ catch (Exception $e)
 $_SESSION['login'] = 'invalide';
 $_SESSION['prof'] = 'invalide';
 $_SESSION['id'] = 0;
+$_SESSION['notes'] = 'null';
 
 ?>
 <!DOCTYPE html>

@@ -4,7 +4,7 @@
 *Fichier fonction à utiliser dans les différents pages.
 *Utiliser require('fonction.php'); pour appeler le fichier.
 *include va réécrire alors que require va chercher dans le fichier.
-	-Id-bdd / Fonction initialisation de la bdd et ouverture de session
+	-Id-bdd 								/ Fonction initialisation de la bdd et ouverture de session
 	-SautLignedansPhp 						/ Fonction saut de ligne par </br>
 	-InfoUserIntoSession 					/ Fonction de remplissage des informations de $_SESSION
 	-CompteNbTuples		 					/ Fonction pour compter le nombre de tuples d'un questionnaire.
@@ -26,19 +26,28 @@
 	-GetTousId_questionRepondues			/ Fonction renvoie les numero des questions répondues par l'utilisateur.
 	-GetReponseReponse   					/ Fonction renvoie la réponse d'une question.
 	-UpdateQuestion 						/ Fonction renvoie la réponse d'une question.
-	-*AjouterQuestion						/ Fonction qui ajoute une question à la bdd.
+	-AjouterQuestion						/ Fonction qui ajoute une question à la bdd.
+	-DeleteQuestion							/ Fonction qui retire une/des question précise à la bdd.
+	-Get1erId_questionQuestion				/ Fonction qui renvoie le premier id_question du questionnaire.
+	-GetTousnumero_questionnQuestion		/ Fonction qui renvoie tous les numero_question d'un questionnaire
+	-GetTousReponseReponse					/ Fonction qui renvoie le texte de toutes les réponses à une question
+	-GetTousId_utilisateurReponse			/ Fonction qui renvoie l'id_utilisateur de toutes les réponses à une question.
+	-GetLoginUtilisateur					/ Fonction qui renvoie le pseudo de l'utilisateur.
 	-
 *Modification: Date/Initiales/Choses_modifiées
 *22 Mars 2018/MT/Ajout fonctions: CompteNbQuestion, CompteNbQuestion, CompteNbReponse, GetTousId_questionnaireQuestionnaire, GetNomQuestionnaire, GetDescriptionQuestionnaire, GetTousId_questionnQuestion, GetNumero_questionQuestion, GetTexteQuestion, VerifierSiDejaReponse, AjouterReponse, UpdateReponse, GetTousLesUtilisateurs, GetPasswordUtilisateur, GetIdUtilisateurs
 *23 Mars 2018/MT/Ajout fonctions: AjouterUtilisateur, GetTousId_questionRepondues, GetReponseReponse, UpdateQuestion, AjouterQuestion
-*
+*24 Mars 2018/MT/Ajout fonctions: DeleteQuestion, Get1erId_questionQuestion, GetTousnumero_questionnQuestion, GetTousReponseReponse
+*25 MArs 2018/MT/Ajout fonctons: GetTousId_utilisateurReponse
+*27 Mars 2018/MT/Ajout fonction: GetLoginUtilisateur
+
 */
 
 
 
-/*
+/**
 *Fonction initialisation de la bdd et ouverture de session.
-*On réunit ici les id mdp et nsd, si un paramètre change, alors le changement ne doit ce faire que ici.
+*@return array 0->string, 1->string, 3->string
 */
 function Id_bdd()
 {
@@ -53,10 +62,9 @@ function Id_bdd()
     return $id_bdd;
 }
 
-/*
+/**
 *Fonction saut de ligne par </br>.
-*$nombre à remplir par le nombre de fois que l'on veut sauter de ligne.
-*Cette fonction éviter d'écrire ) chaque fois ?></br><?php avec le nombre de </br> correspondant aux lignes.
+* @param integer $nombre
 */
 function SautLigneDansPhp($nombre)
 {
@@ -66,11 +74,11 @@ function SautLigneDansPhp($nombre)
 	}
 }
 
-/*
+/**
 *Fonction de remplissage des informations de $_SESSION.
-*$_SESSION['login'] pour le login de l'utilisateur;
-*$_SESSION['prof'] pour le rang de l'utilisateur;
-*$_SESSION['id'] pour l'id de l'utilisateur;
+* @param string $id
+* @param string $login
+* @param boolean(0-9) $prof
 */
 function InfoUserIntoSession($id, $login, $prof)
 {
@@ -79,10 +87,10 @@ function InfoUserIntoSession($id, $login, $prof)
 	$_SESSION['id'] = $id;
 }
 
-/*
+/**
 *Fonction pour compter le nombre de tuples d'un questionnaire.
-*Reçoit le nom de la table.
-*Renvoie le nombre de tuples.
+* @param string $nom
+* @return integer 
 */
 function CompteNbTuples($nom)
 {
@@ -94,10 +102,10 @@ function CompteNbTuples($nom)
 	return $nb2;
 }
 
-/*
+/**
 *Fonction pour compter le nombre de questions d'un formulaire précis.
-*Reçoit l'id du questionnaire.
-*Renvoie le nombre de question correspondantes au questionnaire.
+* @param integer $id_utilisateur
+* @return integer
 */
 function CompteNbQuestion($id_questionnaire)
 {
@@ -109,10 +117,11 @@ function CompteNbQuestion($id_questionnaire)
 	return $nb2;
 }
 
-/*
+/**
 *Fonction pour compter le nommbre de réponse aux question d'un formulaire précis, faites par un utilisateur précis.
-*Reçoit l'id du questionnaire.
-*Renvoie le nombre de question correspondantes au questionnaire.
+* @param integer $id_questionnaire
+* @param integer $id_utilisateur
+* @return integer
 */
 function CompteNbReponse($id_questionnaire, $id_utilisateur)
 {
@@ -124,10 +133,9 @@ function CompteNbReponse($id_questionnaire, $id_utilisateur)
 	return $nb2;
 }
 
-/*
+/**
 *Fonction qui renvoie tous les id_questionnaire du tableau QUESTIONNAIRE.
-*Ne reçoit rien.
-*Renvoie un tableau avec les iq_questionnaire.
+* @return integer array des id_questionnaire
 */
 function GetTousId_questionnaireQuestionnaire()
 {
@@ -143,10 +151,10 @@ function GetTousId_questionnaireQuestionnaire()
 	return $id;
 }
 
-/*
+/**
 *Fonction qui renvoie le nom du questionnaire ciblé.
-*Recoit d'id_questionnaire.
-*Renvoie le nom du questionnaire.
+* @param integer $id_questionnaire
+* @return string
 */
 function GetNomQuestionnaire($id_questionnaire)
 {
@@ -157,10 +165,10 @@ function GetNomQuestionnaire($id_questionnaire)
 	$rep->closeCursor();
 	return $rep2;
 }
-/*
+/**
 *Fonction qui renvoie la description du questionnaire ciblé.
-*Recoit d'id_questionnaire.
-*Renvoie la description du questionnaire.
+* @param integer $id_questionnaire
+* @return string
 */
 function GetDescriptionQuestionnaire($id_questionnaire)
 {
@@ -172,16 +180,17 @@ function GetDescriptionQuestionnaire($id_questionnaire)
 	return $rep2;
 }
 
-/*
+/**
 *Fonction qui renvoie tous les id_question en fonction de l'id_questionnaire choisie.
-*Reçoit l'id_questionnaire.
-*Renvoie un tableau avec les iq_questionn.
+* @param integer $id_questionnaire
+* @return integer array tableau des id_question dans l'ordre croissant des numero_question
 */
 function GetTousId_questionnQuestion($id_questionnaire)
 {
 	global $bdd;
 	$i = 0;
-	$rep = $bdd -> query("SELECT id_question FROM QUESTION WHERE id_questionnaire =" .$id_questionnaire);
+	$rep = $bdd -> prepare("SELECT id_question FROM QUESTION WHERE id_questionnaire = ? ORDER BY numero_question");
+	$rep->execute(array($id_questionnaire));
 	while ($don = $rep->fetch())
 	{
 		$id[$i] = $don['id_question'];
@@ -191,10 +200,10 @@ function GetTousId_questionnQuestion($id_questionnaire)
 	return $id;
 }
 
-/*
+/**
 *Fonction qui renvoie le numéro de la question ciblée.
-*Recoit de la question.
-*Renvoie le numéro de la question.
+* @param integer $id_question
+* @return integer
 */
 function GetNumero_questionQuestion($id_question)
 {
@@ -206,10 +215,10 @@ function GetNumero_questionQuestion($id_question)
 	return $rep2;
 }
 
-/*
+/**
 *Fonction qui renvoie le texte de la question ciblée.
-*Recoit de l'id_question de la question.
-*Renvoie le texte de la question.
+* @param integer $id_question
+* @return string
 */
 function GetTexteQuestion($id_question)
 {
@@ -221,10 +230,11 @@ function GetTexteQuestion($id_question)
 	return $rep2;
 }
 
-/*
+/**
 *Fonction qui renvoie si la question à déja une réponse.
-*Recoit de l'id_utilisateur de l'utilisateur et l'id_question de la question.
-*Renvoie 0 pour n'a pas été faite, 1 pour a été faite.
+* @param integer $id_utilisateur
+* @param integer $id_question
+* @return boolean (0-Pas de réponse. 1-Déjà une réponse)
 */
 function VerifierSiDejaReponse($id_utilisateur, $id_question)
 {
@@ -236,10 +246,10 @@ function VerifierSiDejaReponse($id_utilisateur, $id_question)
 	return $rep2;
 }
 
-/*
+/**
 *Fonction qui renvoie le texte de la réponse.
-*Recoit l'id_utilisateur de l'utilisateur et l'id_question de la question.
-*Renvoie le texte de la réponse.
+* @param integer $id_utilisateur
+* @param integer id_question
 */
 function GetTexteReponse($id_utilisateur, $id_question)
 {
@@ -251,10 +261,11 @@ function GetTexteReponse($id_utilisateur, $id_question)
 	$req->closeCursor();
 }
 
-/*
+/**
 *Fonction qui ajoute une réponse à la bdd.
-*Recoit de l'id_utilisateur de l'utilisateur et l'id_question de la question et la réponse texte à associé.
-*Ajoute une réponse dans la bdd.
+* @param integer $id_utilisateur
+* @param integer $id_question
+* @param string $texte
 */
 function AjouterReponse($id_utilisateur, $id_question, $texte_reponse)
 {
@@ -269,10 +280,11 @@ function AjouterReponse($id_utilisateur, $id_question, $texte_reponse)
 	$req->closeCursor();
 }
 
-/*
+/**
 *Fonction qui met à jour un réponse de la bdd.
-*Recoit de l'id_utilisateur de l'utilisateur et l'id_question de la question et la réponse texte à associé.
-*Modifie une réponse dans la bdd.
+* @param integer $id_utilisateur
+* @param integer $id_question
+* @param string $texte
 */
 function UpdateReponse($id_utilisateur, $id_question, $texte)
 {
@@ -286,9 +298,9 @@ function UpdateReponse($id_utilisateur, $id_question, $texte)
 	));
 }
 
-/*
+/**
 *Fonction qui renvoie tous les utilisateurs.
-*Renvoie un tableau avec tous les utilisateurs.
+* @return string array des login utilisateurs
 */
 function GetTousLesUtilisateurs()
 {
@@ -304,9 +316,10 @@ function GetTousLesUtilisateurs()
 	return $login;
 }
 
-/*
+/**
 *Fonction qui renvoie le password de l'utilisateur.
-*Renvoie le passord de l'utilisateur.
+* @param string $login
+* @return string
 */
 function GetPasswordUtilisateur($login)
 {
@@ -319,9 +332,10 @@ function GetPasswordUtilisateur($login)
 	return $req2;
 }
 
-/*
-*Fonction qui renvoie le password de l'utilisateur.
-*Renvoie le passord de l'utilisateur.
+/**
+*Fonction qui renvoie le id_utilisateur de l'utilisateur.
+* @param string $login
+* @return integer 
 */
 function GetIdUtilisateur($login)
 {
@@ -334,9 +348,11 @@ function GetIdUtilisateur($login)
 	return $id2;
 }
 
-/*
+/**
 *Fonction enregistre un utilisateur.
-*Renvoie le login, le password et si l'utilisateur est prof.
+* @param string $login
+* @param string $password
+* @param integer(0-9) $prof
 */
 function AjouterUtilisateur($login, $password, $prof)
 {
@@ -350,10 +366,10 @@ function AjouterUtilisateur($login, $password, $prof)
 	));
 	$req->closeCursor();
 }
-/*
+/**
 *Fonction renvoie les numero des questions répondues par l'utilisateur.
-*Recoit id_utilisateur de l'utilisateur.
-*Renvoie un tableau de numero_question.
+* @param integer $id_utilisateur
+* @return integer array tableau des id_question
 */
 function GetTousId_questionRepondues($id_utilisateur)
 {
@@ -370,10 +386,11 @@ function GetTousId_questionRepondues($id_utilisateur)
 	return $info;
 }
 
-/*
+/**
 *GetReponseReponseFonction renvoie la réponse d'une question.Fonction renvoie la réponse d'une question.
-*Recoit l'id_utilisateur de l'utilisateur et id_question de la réponse.
-*Renvoie la réponse de REPONSE.
+* @param integer $id_utilisateur
+* @param integer $id_question
+* @return string
 */
 function GetReponseReponse($id_utilisateur, $id_question)
 {
@@ -386,10 +403,10 @@ function GetReponseReponse($id_utilisateur, $id_question)
 	return $rep2;
 }
 
-/*
+/**
 *Fonction renvoie la réponse d'une question.
-*Recoit l'id_utilisateur de l'utilisateur et id_question de la réponse.
-*Renvoie la réponse de REPONSE.
+* @param integer $id_question
+* @param integer $texte
 */
 function UpdateQuestion($id_question, $texte)
 {
@@ -401,10 +418,10 @@ function UpdateQuestion($id_question, $texte)
 	));
 }
 
-/*
+/**
 *Fonction qui ajoute une question à la bdd.
-*Recoit l'id_questionnaire de la question et la question texte à associé.
-*Ajoute une question dans la bdd.
+* @param integer $id_questionnaire
+* @param string $texte
 */
 function AjouterQuestion($id_questionnaire, $texte)
 {
@@ -417,14 +434,116 @@ function AjouterQuestion($id_questionnaire, $texte)
 	));
 }
 
-/*
+/**
 *Fonction qui retire une/des question précise à la bdd.
-*Recoit l'id_questionnaire de la question et la question texte à associé.
-*retire la/les question dans la bdd.
+* @param integer $id_question
 */
 function DeleteQuestion($id_question)
 {
 	global $bdd;
 	$req = $bdd->exec("DELETE FROM QUESTION WHERE id_question=" .$id_question);
+}
+
+/**
+*Fonction qui renvoie le premier id_question du questionnaire
+* @param $id_questionnaire
+* @return integer array des id_question dans 'ordre des numero_question'
+*/
+function Get1erId_questionQuestion($id_questionnaire)
+{
+	global $bdd;
+	$i = 0;
+	$rep = $bdd -> prepare("SELECT id_question FROM QUESTION WHERE id_questionnaire = ? ORDER BY numero_question");
+	$rep->execute(array($id_questionnaire));
+	while ($don = $rep->fetch())
+	{
+		$id[$i] = $don['id_question'];
+		$i++;
+	}
+	$rep->closeCursor();
+	return $id[0];
+}
+
+/**
+*Fonction qui renvoie tous les numero_question d'un questionnaire
+* @param int $id_questionnaire
+* @return integer array des numéros_question dans l'ordre croissant des id_questionnaires
+*/
+function GetTousnumero_questionnQuestion($id_questionnaire)
+{
+	global $bdd;
+	$i = 0;
+	$rep = $bdd -> query("SELECT numero_question FROM QUESTION WHERE id_questionnaire =" .$id_questionnaire);
+	while ($don = $rep->fetch())
+	{
+		$num[$i] = $don['numero_question'];
+		$i++;
+	}
+	$rep->closeCursor();
+	return $num;
+}
+
+/**
+*Fonction qui renvoie le texte de toutes les réponses à une question.
+* @param integer $id_question
+* @return string array des textes réponses dans l'ordre croissant des id_utilisateurs
+*/
+function GetTousReponseReponse($id_question)
+{
+	global $bdd;
+	$i = 0;
+	$req = $bdd -> prepare("SELECT reponse FROM REPONSE WHERE id_question = ? ORDER BY id_utilisateur");
+	$req->execute(array($id_question));
+	while ($don = $req->fetch())
+	{
+		$rep[$i] = $don['reponse'];
+		$i++;
+	}
+	$req->closeCursor();
+
+	if(isset($rep))
+	{
+	return $rep;
+	}
+}
+
+/**
+* Fonction qui renvoie l'id_utilisateur de toutes les réponses à une question.
+* @param int $id_question
+* @return $rep Tableau dans l'ordre croissant des id_utilisateurs d'une question précise
+*/
+function GetTousId_utilisateurReponse($id_question)
+{
+	global $bdd;
+	$i = 0;
+	$req = $bdd -> prepare("SELECT id_utilisateur FROM REPONSE WHERE id_question = ? ORDER BY id_utilisateur");
+	$req->execute(array($id_question));
+	while ($don = $req->fetch())
+	{
+		$rep[$i] = $don['id_utilisateur'];
+		$i++;
+	}
+	$req->closeCursor();
+
+	if(isset($rep))
+	{
+	return $rep;
+	}
+}
+
+/**
+*Fonction qui renvoie le pseudo de l'utilisateur
+* @param integer $id_utilisateur
+* @return string pseudo de l'utilisateur
+*/
+function GetLoginUtilisateur($id_utilisateur)
+{
+	global $bdd;
+	$req = $bdd->prepare('SELECT login FROM UTILISATEUR WHERE id_utilisateur = ?');
+	$req->execute(array($id_utilisateur));
+	$rep=$req->fetchObject();
+	$rep2=$rep->login;
+	$req->closeCursor();
+	return $rep2;
 }
 ?>
