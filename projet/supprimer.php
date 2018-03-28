@@ -39,7 +39,7 @@ $i = 0;
 			}
 			
 			echo "<br />";
-			echo '<a href="choix.php">Accueil</a>'
+			echo '<a href="choix.php">Accueil</a>';
 			
 		}
 		
