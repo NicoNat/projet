@@ -49,7 +49,7 @@ catch (Exception $e)
 		//S'il est prof alors afficher sa partie
 			if($_SESSION['prof'] == 1)
 			{
-				if($_GET['type'] == 'update') //Modification questionnaire
+				if($_GET['type'] == 'update') //Modification question
 				{
 					$id_question = GetTousId_questionnQuestion($_GET['idquestionnaire']);
 					$i = 0;
@@ -59,7 +59,7 @@ catch (Exception $e)
 						$i++;
 					}
 				}
-				elseif ($_GET['type'] == 'add') //Ajout questionnaire
+				elseif ($_GET['type'] == 'add') //Ajout question
 				{
 					AjouterQuestion($_GET['idquestionnaire'], $_POST['add']);
 				}

@@ -40,7 +40,7 @@
 *24 Mars 2018/MT/Ajout fonctions: DeleteQuestion, Get1erId_questionQuestion, GetTousnumero_questionnQuestion, GetTousReponseReponse
 *25 MArs 2018/MT/Ajout fonctons: GetTousId_utilisateurReponse
 *27 Mars 2018/MT/Ajout fonction: GetLoginUtilisateur
-
+*
 */
 
 
@@ -543,6 +543,58 @@ function GetLoginUtilisateur($id_utilisateur)
 	$req->execute(array($id_utilisateur));
 	$rep=$req->fetchObject();
 	$rep2=$rep->login;
+	$req->closeCursor();
+	return $rep2;
+}
+
+/**
+*Fonction qui ajoute un nombre de points à la case point d'une réponse
+* @param integer $id_utilisateur
+* @param integer $id_question
+* @param integer $points
+*/
+function ModifiePoints($id_utilisateur, $id_question, $points)
+{
+	global $bdd;
+	$req = $bdd->prepare('UPDATE REPONSE SET points = :Q WHERE id_question = :id_question AND id_utilisateur = :id_utilisateur');
+	$req -> execute(array(
+		'Q' => $points,
+		'id_question' => $id_question,
+		'id_utilisateur' => $id_utilisateur
+	));
+}
+
+/** 
+*Fonction qui donne la somme des points qu'a un étudiant dans un questionnaire
+* @param integer $id_utilisateur
+* @param integer $id_questionnaire
+* @return integer
+*/
+function CompterPoints($id_utilisateur, $id_questionnaire)
+{
+	
+	global $bdd;
+	$req = $bdd->prepare('SELECT SUM(points) AS pointstotaux FROM REPONSE WHERE id_questionnaire = ? AND id_utilisateur = ?');
+	$req->execute(array($id_questionnaire, $id_utilisateur));
+	$rep=$req->fetch();
+	$rep2=$rep->pointstotaux;
+	$req->closeCursor();
+	return $rep2;
+}
+
+/**
+*Fonction qui accède à view et qui renvoie le nombre de point d'un utilisateur à un questionnaire
+* @param integer $id_utilisateur
+* @param integer $id_questionnaire
+* @return integer
+*/
+function GetNote($id_utilisateur, $id_questionnaire)
+{
+	global $bdd;
+	$req = $bdd->prepare('SELECT * FROM NOTEPARQUESTIONNAIRE WHERE id_utilisateur = ? AND id_questionnaire = ?');
+	$req->execute(array($id_utilisateur, $id_questionnaire));
+	$rep=$req->fetchObject();
+	$rep2=$rep->notes;
 	$req->closeCursor();
 	return $rep2;
 }

@@ -2,7 +2,6 @@
 require_once('fonction.php');
 require_once('utilisateur.php');
 $id_bdd = Id_bdd();
-
 try
 {
 	$bdd = new PDO($id_bdd['nsd'],$id_bdd['id'],$id_bdd['mdp']);
@@ -11,7 +10,6 @@ catch (Exception $e)
 {
     die('Erreur : ' . $e->getMessage());
 }
-
 $_SESSION['question'] = 1;
 $i = 0;
 ?>

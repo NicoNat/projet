@@ -36,30 +36,16 @@ catch (Exception $e)
 */
 if($_SESSION['prof'] == 1)
 {
-	$userssend = file_get_contents('store');
-	$users = unserialize($userssend);
 	$num = GetTousId_utilisateurReponse($_GET['id_question']);
 	$i = 0;
 	while (isset($num[$i]))
 	{
-		if(isset($users[$i]) && isset($_POST[$num[$i]]) && $_POST[$num[$i]] == 'on')
+		if(isset($_POST[$num[$i]]) && $_POST[$num[$i]] == 'on' && isset($_POST['points']))
 		{
-			$users[$i]->point($_GET['id_questionnaire'], 1);
-			echo '</br>Ne créer pas';
+			ModifiePoints($num[$i], $_GET['id_question'], $_POST['points']);
 		}
-		elseif(isset($_POST[$num[$i]]) && $_POST[$num[$i]] == 'on')
-		{
-			$users[$i] = new PointsUtilisateur($num[$i]);
-			$users[$i]->point($_GET['id_questionnaire'], 1);
-			echo "</br>Créer";
-		}
-		print_r($users[$i]);
-		echo "</br>J'prend l'id_utilisateur " .$users[$i]->getId_utilisateur() ."</br>";
 		$i++;
 	}
-	$userssend = serialize($users);
-	// enregistre $s quelque part où corriger.php peut le retrouver
-	file_put_contents('store', $userssend);
 }
 
 $baz = array("id_questionnaire" => $_GET['id_questionnaire'], "id_question" => $_GET['id_question']);

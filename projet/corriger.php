@@ -91,21 +91,25 @@ catch (Exception $e)
 			$i++;
 		}
 		?>
+			<div class="group">
+				<input type="points" name="points">
+				<label>points </label>
+			</div>
 			<p><input type="submit" name="valider" value="Valide la correction" href=""></p>
 		</form>
 		<?php
+		if (isset($_GET['message']) && $_GET['message'] == "ErrorPoints") {
+			echo "Veuillez remplir la case: points";
+		}
 		/*
 		*Reception et affichage des notes.
-		*/
+		*/ 
+
 		//Reception des notes.
-		$userssend = file_get_contents('store');
-		$notes = unserialize($userssend);
-		$i = 0;
-		while(isset($notes[$i]))
+ 		$i = 0;
+		while (isset($id_utilisateur[$i]))
 		{
-			echo "L'étudiant " .GetLoginUtilisateur($notes[$i]->getId_utilisateur()) ." a obtenu " .$notes[$i]->getPoints($_GET['id_questionnaire']) ." bonnes réponses</br>";
-			print_r($notes[$i]);
-			echo "</br>";
+			echo "L'utilisateur " .GetLoginUtilisateur($id_utilisateur[$i]) ." à " .GetNote($id_utilisateur[$i], $_GET['id_questionnaire']) ." points.</br>";
 			$i++;
 		}
 	}	

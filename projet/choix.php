@@ -11,7 +11,7 @@
 *Affichage de la partie privée aux proffesseurs.
 *Modification: Date/Initiales/Choses_modifiées
 *23 Mars 2018/MT/Réecriture des echo en une ligne
-*
+*28/Mars 2018/NN/Ajout de la partie suppression d'un questionnaire
 *
 */
 
@@ -121,7 +121,7 @@ $i = 1;
 				SautLigneDansPhp(1);
 				echo 'Description: ' .GetDescriptionQuestionnaire($id_questionnaire[$i]);
 				SautLigneDansPhp(1);
-				echo '<a href="modifier.php?id_questionnaire='.$id_questionnaire[$i].'">Modifier</a> / <a href="supprimer.php?id_questionnaire='.$id_questionnaire[$i].'">Supprimer question</a> / <a href="corriger.php?id_questionnaire='.$id_questionnaire[$i].'">Corriger</a> / <a href="supprimer.php?id_questionnaire='.$id_questionnaire[$i].'">Supprimer questionnaire</a>';
+				echo '<a href="modifier.php?id_questionnaire='.$id_questionnaire[$i].'">Modifier</a> / <a href="modifier.php?id_questionnaire='.$id_questionnaire[$i].'">Supprimer question</a> / <a href="corriger.php?id_questionnaire='.$id_questionnaire[$i].'">Corriger</a> / <a href="supprimer.php?id_questionnaire='.$id_questionnaire[$i].'">Supprimer questionnaire</a>';
 				SautLigneDansPhp(2);
 				$i++;
 			}
