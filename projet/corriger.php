@@ -19,7 +19,6 @@
 //Appel du fichier contenant les variables
 require_once('fonction.php');
 require_once('utilisateur.php');
-require_once('pointsutilisateur.php');
 $id_bdd = Id_bdd();
 //Vérification de la connexion à la bdd
 try

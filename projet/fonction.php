@@ -33,6 +33,12 @@
 	-GetTousReponseReponse					/ Fonction qui renvoie le texte de toutes les réponses à une question
 	-GetTousId_utilisateurReponse			/ Fonction qui renvoie l'id_utilisateur de toutes les réponses à une question.
 	-GetLoginUtilisateur					/ Fonction qui renvoie le pseudo de l'utilisateur.
+	-ModifiePoints							/ Fonction qui ajoute un nombre de points à la case point d'une réponse
+	-GetNote 								/ Fonction qui accède à view et qui renvoie le nombre de point d'un utilisateur à un questionnaire
+	-
+	-
+	-
+	-
 	-
 *Modification: Date/Initiales/Choses_modifiées
 *22 Mars 2018/MT/Ajout fonctions: CompteNbQuestion, CompteNbQuestion, CompteNbReponse, GetTousId_questionnaireQuestionnaire, GetNomQuestionnaire, GetDescriptionQuestionnaire, GetTousId_questionnQuestion, GetNumero_questionQuestion, GetTexteQuestion, VerifierSiDejaReponse, AjouterReponse, UpdateReponse, GetTousLesUtilisateurs, GetPasswordUtilisateur, GetIdUtilisateurs
@@ -40,7 +46,7 @@
 *24 Mars 2018/MT/Ajout fonctions: DeleteQuestion, Get1erId_questionQuestion, GetTousnumero_questionnQuestion, GetTousReponseReponse
 *25 MArs 2018/MT/Ajout fonctons: GetTousId_utilisateurReponse
 *27 Mars 2018/MT/Ajout fonction: GetLoginUtilisateur
-*
+*28 Mars 2018/MT/Ajout fonctions: ModifiePoints, GetNote
 */
 
 
@@ -197,7 +203,10 @@ function GetTousId_questionnQuestion($id_questionnaire)
 		$i++;
 	}
 	$rep->closeCursor();
+	if(isset($id))
+	{
 	return $id;
+	}
 }
 
 /**
@@ -407,8 +416,9 @@ function GetReponseReponse($id_utilisateur, $id_question)
 *Fonction renvoie la réponse d'une question.
 * @param integer $id_question
 * @param integer $texte
+* @param integer $numero_question
 */
-function UpdateQuestion($id_question, $texte)
+function UpdateQuestion($id_question, $texte, $numero_question)
 {
 	global $bdd;
 	$req = $bdd->prepare('UPDATE QUESTION SET texte = :Q WHERE id_question = :id_question');
@@ -416,6 +426,13 @@ function UpdateQuestion($id_question, $texte)
 		'Q' => $texte,
 		'id_question' => $id_question
 	));
+	$req->closeCursor();
+	$req = $bdd->prepare('UPDATE QUESTION SET numero_question = :Q WHERE id_question = :id_question');
+	$req -> execute(array(
+		'Q' => $numero_question,
+		'id_question' => $id_question
+	));
+	$req->closeCursor();
 }
 
 /**
@@ -423,14 +440,15 @@ function UpdateQuestion($id_question, $texte)
 * @param integer $id_questionnaire
 * @param string $texte
 */
-function AjouterQuestion($id_questionnaire, $texte)
+function AjouterQuestion($id_questionnaire, $texte, $numero_question)
 {
 	global $bdd;
-	$req = $bdd->prepare("INSERT INTO QUESTION(id_questionnaire, texte) 
-						VALUES(:id_questionnaire, :texte)");
+	$req = $bdd->prepare("INSERT INTO QUESTION(id_questionnaire, texte, numero_question) 
+						VALUES(:id_questionnaire, :texte, :numero_question)");
 	$req->execute(array(
 		'id_questionnaire' => $id_questionnaire,
 		'texte' => $texte,
+		'numero_question' => $numero_question
 	));
 }
 
@@ -564,24 +582,6 @@ function ModifiePoints($id_utilisateur, $id_question, $points)
 	));
 }
 
-/** 
-*Fonction qui donne la somme des points qu'a un étudiant dans un questionnaire
-* @param integer $id_utilisateur
-* @param integer $id_questionnaire
-* @return integer
-*/
-function CompterPoints($id_utilisateur, $id_questionnaire)
-{
-	
-	global $bdd;
-	$req = $bdd->prepare('SELECT SUM(points) AS pointstotaux FROM REPONSE WHERE id_questionnaire = ? AND id_utilisateur = ?');
-	$req->execute(array($id_questionnaire, $id_utilisateur));
-	$rep=$req->fetch();
-	$rep2=$rep->pointstotaux;
-	$req->closeCursor();
-	return $rep2;
-}
-
 /**
 *Fonction qui accède à view et qui renvoie le nombre de point d'un utilisateur à un questionnaire
 * @param integer $id_utilisateur
@@ -597,5 +597,21 @@ function GetNote($id_utilisateur, $id_questionnaire)
 	$rep2=$rep->notes;
 	$req->closeCursor();
 	return $rep2;
+}
+
+/**
+*Fonction qui ajoute un questionnaire à la bdd.
+* @param string $nom
+* @param string $description
+*/
+function AjouterQuestionnaire($nom, $description)
+{
+	global $bdd;
+	$req = $bdd->prepare("INSERT INTO QUESTIONNAIRE(nom, description) 
+						VALUES(:nom, :description)");
+	$req->execute(array(
+		'nom' => $nom,
+		'description' => $description,
+	));
 }
 ?>

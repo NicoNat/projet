@@ -125,6 +125,16 @@ $i = 1;
 				SautLigneDansPhp(2);
 				$i++;
 			}
+			echo '<a href="update.php?type=addQuestionnaire">Ajouter Questionnaire</a>';
+			?>
+			<form action="update.php?type=addQuestionnaire" method="POST" >
+				</br>
+					<textarea name="nom" rows="4" cols="45" >Nom du questionnaire</textarea>
+					<textarea name="description" rows="4" cols="45" >Descrition du questionnaire</textarea>
+				</br></br>
+				<p><input type="submit" name="valider" value="Ajoutez votre questionnaire" href=""></p>
+			</form>
+			<?php
 		}
 	?>
     </body>

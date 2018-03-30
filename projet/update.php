@@ -11,7 +11,7 @@
 *Partie qui permet de supprimer une ou des questions du formulaire
 *Modification: Date/Initiales/Choses_modifiées
 *22 Mars 2018/MT/Modification de Enregistrer la réponse, avec différentiation de l'add et de l'update.
-*
+*30 Mars 2018/MT/Ajustement du code pour les nouveaux $_POST en array.
 *
 */
 
@@ -49,33 +49,48 @@ catch (Exception $e)
 		//S'il est prof alors afficher sa partie
 			if($_SESSION['prof'] == 1)
 			{
-				if($_GET['type'] == 'update') //Modification question
+				if($_GET['type'] == 'update' && isset($_GET['idquestionnaire'])) //Modification question
 				{
+					foreach($_POST['modif'] as $field_name => $field_value)
+					{
+   						$idDeLaQuestion[$field_name] = $field_value;
+					}
+					foreach($_POST['numeroUpdate'] as $field_name => $field_value)
+					{
+   						$numeroDeLaQuestionUpdate[$field_name] = $field_value;
+					}
 					$id_question = GetTousId_questionnQuestion($_GET['idquestionnaire']);
 					$i = 0;
 					while (isset($id_question[$i]))
 					{
-						UpdateQuestion($id_question[$i], $_POST[$id_question[$i]]);
+						UpdateQuestion($id_question[$i], $idDeLaQuestion[$id_question[$i]], $numeroDeLaQuestionUpdate[$id_question[$i]]);
 						$i++;
 					}
 				}
-				elseif ($_GET['type'] == 'add') //Ajout question
+				elseif ($_GET['type'] == 'add' && isset($_GET['idquestionnaire'])) //Ajout question
 				{
-					AjouterQuestion($_GET['idquestionnaire'], $_POST['add']);
+					AjouterQuestion($_GET['idquestionnaire'], $_POST['add'], $_POST['numeroAdd']);
 				}
-				elseif ($_GET['type'] == 'delete') //Suppression question
+				elseif ($_GET['type'] == 'delete' && isset($_GET['idquestionnaire'])) //Suppression question
 				{
-					
+					foreach($_POST['delete'] as $field_name => $field_value)
+					{
+   						$numeroDeLaQuestionDelete[$field_name] = $field_value;
+					}
 					$id_question = GetTousId_questionnQuestion($_GET['idquestionnaire']);
 					$i = 0;
 					while (isset($id_question[$i]))
 					{
-						if(isset($_POST[$id_question[$i]]) && $_POST[$id_question[$i]] == 'on')
+						if(isset($numeroDeLaQuestionDelete[$id_question[$i]]) && $numeroDeLaQuestionDelete[$id_question[$i]] == 'on')
 						{
 							DeleteQuestion($id_question[$i]);
 						}
 						$i++;
 					}
+				}
+				elseif ($_GET['type'] == 'addQuestionnaire') //Ajout questionnaire
+				{
+					AjouterQuestionnaire($_POST['nom'], $_POST['description']);
 				}
 				$baz = array("value" => $_GET['idquestionnaire']);
 				header("Location: modifier.php?id_questionnaire={$baz['value']}");

@@ -11,7 +11,7 @@
 *Partie qui permet de supprimer une ou des questions du formulaire
 *Modification: Date/Initiales/Choses_modifiées
 *22 Mars 2018/MT/Modification de Enregistrer la réponse, avec différentiation de l'add et de l'update.
-*
+*30 Mars 2018/MT/MOdification des noms de variables $_POST, mise en array.
 *
 */
 
@@ -56,7 +56,7 @@ $i = 0;
 			*Partie qui permet de modifier une ou des questions du formulaire.
 			*/
 			$id_question = GetTousId_questionnQuestion($_GET['id_questionnaire']);
-			echo 'Modifier:';
+			echo 'Modifier le questionnaire: ';
 			echo $_GET['id_questionnaire'];
 			?>
 				</br></br>
@@ -68,7 +68,8 @@ $i = 0;
 				echo 'Question: ' .$id_question[$i] .' ' .GetTexteQuestion($id_question[$i]);
 				?>
 					</br>
-					<textarea name="<?php echo $id_question[$i]; ?>" rows="4" cols="45" ><?php echo GetTexteQuestion($id_question[$i]);?></textarea>
+					<textarea name="modif[<?php echo $id_question[$i]; ?>]" rows="4" cols="45" ><?php echo GetTexteQuestion($id_question[$i]);?></textarea>
+					<input type="number" name="numeroUpdate[<?php echo $id_question[$i]; ?>]" value="<?php echo GetNumero_questionQuestion($id_question[$i]); ?>">
 					</br></br>
 				<?php
 				$i++;
@@ -86,6 +87,7 @@ $i = 0;
 				</br></br>
 				<form action=update.php?type=add&amp;idquestionnaire=<?php echo $_GET['id_questionnaire'] ?> method="POST" >
 					<textarea name="add" rows="4" cols="45" >Ajoutez votre question</textarea>
+					<input type="number" name="numeroAdd">
 					<p><input type="submit" name="valider" value="Valider votre ajout" href=""></p>
 				</form>
 				</br></br>
@@ -105,7 +107,7 @@ $i = 0;
 			while (isset($id_question[$i]))
 			{
 				?>
-					<input type="checkbox" name="<?php echo $id_question[$i] ?>" id="<?php echo $id_question[$i] ?>" /> <label for="<?php echo $id_question[$i] ?>">Question <?php echo $id_question[$i] ?></label><br />
+					<input type="checkbox" name="delete[<?php echo $id_question[$i]; ?>]" /> <label for="<?php echo $id_question[$i] ?>">Question <?php echo $id_question[$i] ?></label><br />
 				<?php
 				$i++;
 			}
