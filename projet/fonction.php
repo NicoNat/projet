@@ -35,8 +35,8 @@
 	-GetLoginUtilisateur					/ Fonction qui renvoie le pseudo de l'utilisateur.
 	-ModifiePoints							/ Fonction qui ajoute un nombre de points à la case point d'une réponse
 	-GetNote 								/ Fonction qui accède à view et qui renvoie le nombre de point d'un utilisateur à un questionnaire
-	-
-	-
+	-AjouterQuestionnaire					/ Fonction qui ajoute un questionnaire à la bdd.
+	-GetPoints 								/ Fonction qui retourne le nombre de point qu'a gagné l'étudiant pour cette réponse.
 	-
 	-
 	-
@@ -46,7 +46,8 @@
 *24 Mars 2018/MT/Ajout fonctions: DeleteQuestion, Get1erId_questionQuestion, GetTousnumero_questionnQuestion, GetTousReponseReponse
 *25 MArs 2018/MT/Ajout fonctons: GetTousId_utilisateurReponse
 *27 Mars 2018/MT/Ajout fonction: GetLoginUtilisateur
-*28 Mars 2018/MT/Ajout fonctions: ModifiePoints, GetNote
+*28 Mars 2018/MT/Ajout fonctions: ModifiePoints, GetNote, AjouterQuestionnaire
+*31 Mars 2018/MT/Ajout fonction: GetPoints,
 */
 
 
@@ -613,5 +614,81 @@ function AjouterQuestionnaire($nom, $description)
 		'nom' => $nom,
 		'description' => $description,
 	));
+}
+
+/**
+*Fonction qui retourne le nombre de point qu'a gagné l'étudiant pour cette réponse.
+* @param integer $id_utilisateur
+* @param integer $id_question
+* @return integer points
+*/
+function GetPoints($id_utilisateur, $id_question)
+{
+	global $bdd;
+	$req = $bdd->prepare('SELECT points FROM REPONSE WHERE id_utilisateur = ? AND id_question = ?');
+	$req->execute(array($id_utilisateur, $id_question));
+	$rep=$req->fetchObject();
+	$rep2=$rep->points;
+	$req->closeCursor();
+	return $rep2;
+}
+
+/**
+*Fonction qui retourne le texte réponse d'une question.
+* @param integer $id_question
+* @return string
+*/
+function getReponseProf($id_question)
+{
+	global $bdd;
+	$req = $bdd->prepare('SELECT bonneReponse FROM QUESTION WHERE id_questionnaire = ?');
+	$req->execute(array($id_question));
+	$rep=$req->fetchObject();
+	$rep2=$rep->bonneReponse;
+	$req->closeCursor();
+	return $rep2;
+}
+
+/**
+*Fonction qui retourne le résultat d'une requête sql
+* @param string $requete
+* @return array 
+*/
+function ResultatRequete($requete)
+{
+	global $bdd;
+	$req = $bdd->exec('' .$requete);
+	$rep=$req->fetchObject();
+	$rep2=$rep;
+	$req->closeCursor();
+	return $rep2;
+}
+
+/**
+*Fonction qui test l'exacte similitude entre deux tableaux
+* @param array $tab_etudiant
+* @param array $tab_prof
+* @return string
+*/
+function EgalArray($tab_etudiant, $tab_prof)
+{
+	if (count($tab_etudiant) == count($tab_prof))
+	{
+		$i = 0;
+		$erreur = "true";
+		while(isset($tab_prof[$i]) && $erreur == "true")
+		{
+			if ($tab_prof[$i] == $tab_etudiant[$i])
+			{
+				$erreur = "true";
+			}
+			else
+			{
+				$erreur = "false";
+			}
+			$i++;
+		}
+	}
+	return $erreur;
 }
 ?>

@@ -65,11 +65,12 @@ $i = 0;
 			$i = 0;
 			while (isset($id_question[$i]))
 			{
-				echo 'Question: ' .$id_question[$i] .' ' .GetTexteQuestion($id_question[$i]);
+				echo 'Id_question = ' .$id_question[$i] .' ' .GetTexteQuestion($id_question[$i]);
 				?>
 					</br>
 					<textarea name="modif[<?php echo $id_question[$i]; ?>]" rows="4" cols="45" ><?php echo GetTexteQuestion($id_question[$i]);?></textarea>
 					<input type="number" name="numeroUpdate[<?php echo $id_question[$i]; ?>]" value="<?php echo GetNumero_questionQuestion($id_question[$i]); ?>">
+					<label>Numero de la question </label>
 					</br></br>
 				<?php
 				$i++;
@@ -107,7 +108,7 @@ $i = 0;
 			while (isset($id_question[$i]))
 			{
 				?>
-					<input type="checkbox" name="delete[<?php echo $id_question[$i]; ?>]" /> <label for="<?php echo $id_question[$i] ?>">Question <?php echo $id_question[$i] ?></label><br />
+					<input type="checkbox" name="delete[<?php echo $id_question[$i]; ?>]" /> <label for="<?php echo $id_question[$i] ?>">Question <?php echo GetNumero_questionQuestion($id_question[$i]); ?></label><br />
 				<?php
 				$i++;
 			}

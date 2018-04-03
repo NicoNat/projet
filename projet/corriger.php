@@ -8,7 +8,7 @@
 *Vérifie si l'utilisateur est prof
 *Modification: Date/Initiales/Choses_modifiées
 *23 Mars 2018/MT/Réecriture des echo en une ligne
-*
+*31 Mars 2018/MT/Ajout des checkbox déjà checked si l'étudiant à déjà des points sur cette question
 *
 */
 
@@ -70,7 +70,7 @@ catch (Exception $e)
 		</form>
 		<?php
 		/*
-		*Affichage des réponses.
+		*Affichage des réponses avec correction manuelle.
 		*/
 		?>
 		<form method="post" action="<?php echo 'notation.php?id_questionnaire=' .$_GET['id_questionnaire'] .'&id_question=' .$_GET['id_question']; ?>">
@@ -84,7 +84,7 @@ catch (Exception $e)
 		while(isset($reponses[$i]))
 		{
 		?>
-			<input type="checkbox" name="<?php echo $id_utilisateur[$i]; ?>" id="<?php echo $id_utilisateur[$i]; ?>" />
+			<input type="checkbox" name="<?php echo $id_utilisateur[$i]; ?>" id="<?php echo $id_utilisateur[$i]; ?>" <?php echo $string = (GetPoints($id_utilisateur[$i], $_GET['id_question'])) ? $string = "checked" : $string = "default" ;?> />
 			<strong>Reponse: </strong><?php echo $reponses[$i]; ?><br />
 		<?php
 			$i++;
@@ -100,6 +100,10 @@ catch (Exception $e)
 		if (isset($_GET['message']) && $_GET['message'] == "ErrorPoints") {
 			echo "Veuillez remplir la case: points";
 		}
+		/*
+		*Prè-correction automatique du questionnaire.
+		*/
+
 		/*
 		*Reception et affichage des notes.
 		*/ 

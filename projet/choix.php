@@ -11,8 +11,8 @@
 *Affichage de la partie privée aux proffesseurs.
 *Modification: Date/Initiales/Choses_modifiées
 *23 Mars 2018/MT/Réecriture des echo en une ligne
-*28/Mars 2018/NN/Ajout de la partie suppression d'un questionnaire
-*
+*28 Mars 2018/NN/Ajout de la partie suppression d'un questionnaire
+*3 Avril 2018/MT/Modification de l'accès aux formulaire, correction d'un problème en cas de formulaire vide
 */
 
 /*
@@ -72,7 +72,7 @@ $i = 1;
 			$nbReponses = CompteNbReponse($i, $_SESSION['id']);
 
 			//Selon le résultat obtenus des nombre réponses et nombre questions du même questionnaire\\
-			if($nbReponses == $nbQuestions) //Si toutes les réponses sont faites, on ne donne pas accès
+			if($nbReponses == $nbQuestions && $nbQuestions != 0) //Si toutes les réponses sont faites, on ne donne pas accès
 			{
 				SautLigneDansPhp(1);
 				echo 'Formulaire' .$i .': ' .$nbReponses .'/' .$nbQuestions .' <a href="valider.php">Voir réponse</a>';
@@ -85,6 +85,12 @@ $i = 1;
 					<a href="listequestions.php?id_questionnaire=<?php echo $i ?>">Formulaire <?php echo $i ?></a>
 				<?php
 					echo ': ' .$nbReponses .'/' .$nbQuestions;					
+			}
+			//Si c'est un formulaire sans question on affiche pas la possibilité de voir les réponses.
+			elseif (($nbReponses == $nbQuestions && $nbQuestions == 0))
+			{
+				SautLigneDansPhp(1);
+				echo 'Formulaire' .$i .': ' .$nbReponses .'/' .$nbQuestions;
 			}
 			//Si aucunes des deux propositions précédents, alors il y a un problème dans la matrice ^^
 			else
