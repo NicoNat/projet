@@ -625,9 +625,10 @@ function AjouterQuestionnaire($nom, $description)
 function SupprimerQuestionnaire($id_questionnaire)
 {
 	global $bdd;
-	$req = bdd->prepare("DELETE FROM REPONSE WHERE id_question IN (SELECT id_question FROM QUESTION WHERE id_questionnaire =".$id_questionnaire.");
-			DELETE FROM QUESTION WHERE id_questionnaire IN (SELECT id_questionnaire FROM QUESTIONNAIRE WHERE id_questionnaire =".$id_questionnaire.");
-			DELETE FROM QUESTIONNAIRE WHERE id_questionnaire =".$id_questionnaire);
+	$req = bdd->prepare('DELETE FROM REPONSE WHERE id_question IN (SELECT id_question FROM QUESTION WHERE id_questionnaire = ?);
+			DELETE FROM QUESTION WHERE id_questionnaire IN (SELECT id_questionnaire FROM QUESTIONNAIRE WHERE id_questionnaire = ?);
+			DELETE FROM QUESTIONNAIRE WHERE id_questionnaire = ?');
+	$req->execute(array($id_questionnaire));
 }
 
 /**
