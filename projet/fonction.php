@@ -48,6 +48,7 @@
 *27 Mars 2018/MT/Ajout fonction: GetLoginUtilisateur
 *28 Mars 2018/MT/Ajout fonctions: ModifiePoints, GetNote, AjouterQuestionnaire
 *31 Mars 2018/MT/Ajout fonction: GetPoints,
+*04 Avril 2018/NN/Ajout fonction: SupprimerQuestionnaire
 */
 
 
@@ -614,6 +615,19 @@ function AjouterQuestionnaire($nom, $description)
 		'nom' => $nom,
 		'description' => $description,
 	));
+}
+
+/**
+*Fonction qui supprime un questionnaire de la bdd
+* @param integer $id_questionnaire
+*/
+
+function SupprimerQuestionnaire($id_questionnaire)
+{
+	global $bdd;
+	$req = bdd->prepare("DELETE FROM REPONSE WHERE id_question IN (SELECT id_question FROM QUESTION WHERE id_questionnaire =".$id_questionnaire.");
+			DELETE FROM QUESTION WHERE id_questionnaire IN (SELECT id_questionnaire FROM QUESTIONNAIRE WHERE id_questionnaire =".$id_questionnaire.");
+			DELETE FROM QUESTIONNAIRE WHERE id_questionnaire =".$id_questionnaire);
 }
 
 /**
