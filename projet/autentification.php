@@ -11,7 +11,6 @@
 *Réaction en fonction des données reçues.
 *Le pseudo existe, alors on vérifie le mot de passe.
 *Réaction en fonction des données reçues.
-*Le pseudo n'existe pas, on créer le compte utilisateur.
 *Puis on redirige vers la page index.php en passant un paramètre de création de compte "CompteCree" dans le liens.
 *Modification: Date/Initiales/Choses_modifiées
 *23 Mars 2018/MT/Ajout de protection htmlspecialchars()
@@ -61,22 +60,14 @@ while(isset($login_utilisateurs[$i]))
 			header("Location: choix.php");
 			exit;
 		}
-		//Si le password associé au pseudo est incorrect ?
-		else
 		//Si le password accocié au pseudo est incorrect alors on renvois l'utilisateur sur la page index.php en passant un paramètre d'erreur de connection "ErreurId" dans le liens.
-		{
-			header("Location: index.php?connexion=ErreurId");
-			exit;
-		}
 	}
 	$i++;
 }
 
 /*
-*Réaction en fonction des données reçues.
-*Le pseudo n'existe pas, on créer le compte utilisateur.
 *Puis on redirige vers la page index.php en passant un paramètre de création de compte "CompteCree" dans le liens.
 */
 AjouterUtilisateur(htmlspecialchars($_POST["login"]), htmlspecialchars($_POST["password"]), 0);
-header("Location: index.php?connexion=CompteCree");
+header("Location: index.php?connexion=ErreurId");
 ?>

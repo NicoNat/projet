@@ -8,7 +8,7 @@
 *Lancement de la fonction adéquate.
 *Modification: Date/Initiales/Choses_modifiées
 *22 Mars 2018/MT/Modification de Enregistrer la réponse, avec différentiation de l'add et de l'update.
-*
+*22 Avril 2018/MT/Modification de la redirection de "valider" vers listequestions.php
 *
 */
 
@@ -43,6 +43,6 @@ elseif ($_GET['type'] == "update")
 {
 	UpdateReponse($_SESSION['id'], $_GET['id_question'], $_POST['message']);
 }
-header("Location: formulaire1.php?id_questionnaire=".$_GET["id_questionnaire"]."&id_question=".$_GET["id_question"]);
+header("Location: listequestions.php?id_questionnaire=".$_GET["id_questionnaire"]);
 exit;
 ?>

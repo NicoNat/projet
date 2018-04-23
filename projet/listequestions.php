@@ -37,8 +37,9 @@ catch (Exception $e)
 $idQuestions = GetTousId_questionnQuestion($_GET["id_questionnaire"]);
 $i = 0;
 while(isset($idQuestions[$i]))
-	{
-		echo "<li>"."<a href=\"formulaire1.php?id_questionnaire=".$_GET["id_questionnaire"]."&id_question=".$idQuestions[$i]."\">"."Question ".GetNumero_questionQuestion($idQuestions[$i])."</a>"." :\"".GetTexteQuestion($idQuestions[$i])."\"</li>";
-		$i++;
-	}
+{
+	echo "<li>"."<a href=\"formulaire1.php?id_questionnaire=".$_GET["id_questionnaire"]."&id_question=".$idQuestions[$i]."\">"."Question ".GetNumero_questionQuestion($idQuestions[$i])."</a>"." :\"".GetTexteQuestion($idQuestions[$i])."\"</li>";
+	$i++;
+}
+echo '<a href="choix.php">retour</a>';
 ?>

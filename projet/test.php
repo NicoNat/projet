@@ -46,9 +46,15 @@ catch (Exception $e)
     <body>
 
     	<form action=test2.php method="POST" >
-			<textarea name="rep" rows="4" cols="45" >Ajoutez votre reponse</textarea>
-			<p><input type="submit" name="valider" value="Valider votre reponse" href=""></p>
+			<textarea name="rep" rows="4" cols="45" >Test de l'exactitude de la ligne (espaces non comptants)</textarea>
+			<p><input type="submit" name="valider" value="Valider" href=""></p>
 		</form>
+		<form action=test2.php method="POST" >
+			<textarea name="quest" rows="4" cols="45" >Renvoie de la réponse à une requête</textarea>
+			<textarea name="quest2" rows="4" cols="45" >Renvoie de la réponse à une requête</textarea>
+			<p><input type="submit" name="valider" value="Valider" href=""></p>
+		</form>
+
 
 		<?php
 		//Partie comparaison en chaine de caractère.
@@ -61,55 +67,6 @@ catch (Exception $e)
 		{
 			echo "Vous n'avez pas le point.";
 		}
-		//Partie comparaison d'un tableau.
-		$arr1 = array(1, 2, 3, 4);
-		$arr2 = array(1, 2, 3, 5);
-		SautLigneDansPhp(1);
-		echo "Celui-ci doit être true: " .EgalArray($arr1, $arr1);
-		SautLigneDansPhp(1);
-		echo "Celui-ci doit être false: " .EgalArray($arr1, $arr2);
-		SautLigneDansPhp(2);
-		$sql = "SHOW FIELDS FROM QUESTION";
-		$result = $bdd->query($sql);
-		$i=0;
-
-		if (!$result)
-		{
-		   echo "Erreur DB, impossible de lister les tables\n";
-		   echo 'Erreur MySQL : ' . mysql_error();
-		   exit;
-		}
-		else
-		{
-			while ($don = $result->fetch())
-			{
-				$id[$i] = $don;
-				$i++;
-			}
-		}
-		$result->closeCursor();
-		print_r($id);
-		SautLigneDansPhp(2);
-		print_r($id[0]);
-		$m = $id[0];
-		SautLigneDansPhp(2);
-		print_r($m);
-		SautLigneDansPhp(2);
-		print_r($m[0]);
-		SautLigneDansPhp(2);
-		echo $id[0][0];
-		SautLigneDansPhp(2);
-		echo "Ok je test la boucle";
-		SautLigneDansPhp(2);
-		$i = 0;
-		while (isset($id[$i][0]))
-		{
-			echo $id[$i][0];
-			SautLigneDansPhp(1);
-			$i++;
-		}
 		?>
-
-
     </body>
 </html>

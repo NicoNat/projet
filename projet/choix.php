@@ -13,6 +13,7 @@
 *23 Mars 2018/MT/Réecriture des echo en une ligne
 *28 Mars 2018/NN/Ajout de la partie suppression d'un questionnaire
 *3 Avril 2018/MT/Modification de l'accès aux formulaire, correction d'un problème en cas de formulaire vide
+*20 Avril 2018/MT/Modification de l'affichage des formulaires, utilisation de : $questionnaire[$i]
 */
 
 /*
@@ -37,7 +38,7 @@ catch (Exception $e)
 *Création des variables utiles.
 *i -> variable d'incrémentation dans diverses parties du code
 */
-$i = 1;
+$i = 0;
 
 ?>
 <!DOCTYPE html>
@@ -61,28 +62,28 @@ $i = 1;
 	*/
 	//Compter le nombre de formulaires présents
 	$nbQuestionnaires = CompteNbTuples('QUESTIONNAIRE');
-
-	while($i <= $nbQuestionnaires) //Il faut changer $i
+	$questionnaire = GetTousId_questionnaireQuestionnaire();
+	while(isset($questionnaire[$i])) //Il faut changer $i
 		{
 			//Vérifier s'il a répondu aux questions avant d'afficher les formulaires 
 			//On regarde le nombre de question du questionnaire\\
-			$nbQuestions = CompteNbQuestion($i);
+			$nbQuestions = CompteNbQuestion($questionnaire[$i]);
 
 			//On regarde le nombre de réponses de l'utilisateur avec le questionnaire correspondant\\
-			$nbReponses = CompteNbReponse($i, $_SESSION['id']);
+			$nbReponses = CompteNbReponse($questionnaire[$i], $_SESSION['id']);
 
 			//Selon le résultat obtenus des nombre réponses et nombre questions du même questionnaire\\
 			if($nbReponses == $nbQuestions && $nbQuestions != 0) //Si toutes les réponses sont faites, on ne donne pas accès
 			{
 				SautLigneDansPhp(1);
-				echo 'Formulaire' .$i .': ' .$nbReponses .'/' .$nbQuestions .' <a href="valider.php">Voir réponse</a>';
+				echo 'Formulaire' .$questionnaire[$i] .': ' .$nbReponses .'/' .$nbQuestions .' <a href="valider.php">Voir réponse</a>';
 			}
 			//Si toutes les questions n'ont pas leurs réponses, on donne accès à listequestion.php avec en paramètre le id_questionnaire du id_questionnaire
 			elseif($nbReponses < $nbQuestions)
 			{
 				?>
 					</br>
-					<a href="listequestions.php?id_questionnaire=<?php echo $i ?>">Formulaire <?php echo $i ?></a>
+					<a href="listequestions.php?id_questionnaire=<?php echo $questionnaire[$i] ?>">Formulaire <?php echo $questionnaire[$i] ?></a>
 				<?php
 					echo ': ' .$nbReponses .'/' .$nbQuestions;					
 			}
@@ -90,7 +91,7 @@ $i = 1;
 			elseif (($nbReponses == $nbQuestions && $nbQuestions == 0))
 			{
 				SautLigneDansPhp(1);
-				echo 'Formulaire' .$i .': ' .$nbReponses .'/' .$nbQuestions;
+				echo 'Formulaire' .$questionnaire[$i] .': ' .$nbReponses .'/' .$nbQuestions;
 			}
 			//Si aucunes des deux propositions précédents, alors il y a un problème dans la matrice ^^
 			else

@@ -12,7 +12,7 @@
 *Modification: Date/Initiales/Choses_modifiées
 *22 Mars 2018/MT/Modification de Enregistrer la réponse, avec différentiation de l'add et de l'update.
 *30 Mars 2018/MT/Ajustement du code pour les nouveaux $_POST en array.
-*
+*22 Avril 2018/MT/Ajout d'une partie pour la bonne réponse aux questions.
 */
 
 /*
@@ -59,17 +59,21 @@ catch (Exception $e)
 					{
    						$numeroDeLaQuestionUpdate[$field_name] = $field_value;
 					}
+					foreach ($_POST['reponse'] as $field_name => $field_value)
+					{
+						$reponseDeLaQuestion[$field_name] = $field_value;
+					}
 					$id_question = GetTousId_questionnQuestion($_GET['idquestionnaire']);
 					$i = 0;
 					while (isset($id_question[$i]))
 					{
-						UpdateQuestion($id_question[$i], $idDeLaQuestion[$id_question[$i]], $numeroDeLaQuestionUpdate[$id_question[$i]]);
+						UpdateQuestion($id_question[$i], $idDeLaQuestion[$id_question[$i]], $numeroDeLaQuestionUpdate[$id_question[$i]], $reponseDeLaQuestion[$id_question[$i]]);
 						$i++;
 					}
 				}
 				elseif ($_GET['type'] == 'add' && isset($_GET['idquestionnaire'])) //Ajout question
 				{
-					AjouterQuestion($_GET['idquestionnaire'], $_POST['add'], $_POST['numeroAdd']);
+					AjouterQuestion($_GET['idquestionnaire'], $_POST['add'], $_POST['numeroAdd'], $_POST['addRep']);
 				}
 				elseif ($_GET['type'] == 'delete' && isset($_GET['idquestionnaire'])) //Suppression question
 				{

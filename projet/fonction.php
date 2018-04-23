@@ -37,6 +37,13 @@
 	-GetNote 								/ Fonction qui accède à view et qui renvoie le nombre de point d'un utilisateur à un questionnaire
 	-AjouterQuestionnaire					/ Fonction qui ajoute un questionnaire à la bdd.
 	-GetPoints 								/ Fonction qui retourne le nombre de point qu'a gagné l'étudiant pour cette réponse.
+	-GetReponseProf 						/ Fonction qui retourne le texte réponse d'une question.
+	-ResultatRequete 						/ Fonction qui retourne le résultat d'une requête sql
+	-EgalArrayD2 							/ Fonction qui test l'exacte similitude entre deux tableaux de dimention 2
+	-EgalArrayD1 							/ Fonction qui test l'exacte similitude entre deux tableaux de dimention 1
+	-CorrectionAuto 						/ Fonction qui renvoie la correction des requêtes des étudiants à une question.
+	-
+	-
 	-
 	-
 	-
@@ -48,7 +55,9 @@
 *27 Mars 2018/MT/Ajout fonction: GetLoginUtilisateur
 *28 Mars 2018/MT/Ajout fonctions: ModifiePoints, GetNote, AjouterQuestionnaire
 *31 Mars 2018/MT/Ajout fonction: GetPoints,
-*04 Avril 2018/NN/Ajout fonction: SupprimerQuestionnaire
+*19 Avril 2018/MT/Ajout fonctions: GetReponseProf, ResultatRequete, EgalArrayD2, EgalArrayD1
+*22 Avril 2018/MT/Modification fonctions: AjouterQuestion(ajout de $bonneReponse), UpdateQuestion(ajout de $bonneReponse), GetTousnumero_questionnQuestion(ajout d'un ORDER BY)
+*23 Avril 2018/MT/Ajout fonction: CorrectionAuto
 */
 
 
@@ -418,9 +427,11 @@ function GetReponseReponse($id_utilisateur, $id_question)
 *Fonction renvoie la réponse d'une question.
 * @param integer $id_question
 * @param integer $texte
+* @param $numero_question
+* @param $reponse
 * @param integer $numero_question
 */
-function UpdateQuestion($id_question, $texte, $numero_question)
+function UpdateQuestion($id_question, $texte, $numero_question, $reponse)
 {
 	global $bdd;
 	$req = $bdd->prepare('UPDATE QUESTION SET texte = :Q WHERE id_question = :id_question');
@@ -435,22 +446,32 @@ function UpdateQuestion($id_question, $texte, $numero_question)
 		'id_question' => $id_question
 	));
 	$req->closeCursor();
+	$req = $bdd->prepare('UPDATE QUESTION SET bonneReponse = :Q WHERE id_question = :id_question');
+	$req -> execute(array(
+		'Q' => $reponse,
+		'id_question' => $id_question
+	));
+	$req->closeCursor();
 }
 
 /**
 *Fonction qui ajoute une question à la bdd.
 * @param integer $id_questionnaire
 * @param string $texte
+* @param integer $numero_question
+* @param string $bonneReponse
+* @param string $texte
 */
-function AjouterQuestion($id_questionnaire, $texte, $numero_question)
+function AjouterQuestion($id_questionnaire, $texte, $numero_question, $bonneReponse)
 {
 	global $bdd;
-	$req = $bdd->prepare("INSERT INTO QUESTION(id_questionnaire, texte, numero_question) 
-						VALUES(:id_questionnaire, :texte, :numero_question)");
+	$req = $bdd->prepare("INSERT INTO QUESTION(id_questionnaire, texte, numero_question, bonneReponse) 
+						VALUES(:id_questionnaire, :texte, :numero_question, :bonneReponse)");
 	$req->execute(array(
 		'id_questionnaire' => $id_questionnaire,
 		'texte' => $texte,
-		'numero_question' => $numero_question
+		'numero_question' => $numero_question,
+		'bonneReponse' => $bonneReponse
 	));
 }
 
@@ -493,7 +514,8 @@ function GetTousnumero_questionnQuestion($id_questionnaire)
 {
 	global $bdd;
 	$i = 0;
-	$rep = $bdd -> query("SELECT numero_question FROM QUESTION WHERE id_questionnaire =" .$id_questionnaire);
+	$rep = $bdd -> prepare("SELECT numero_question FROM QUESTION WHERE id_questionnaire = ? ORDER BY numero_question" );
+	$rep->execute(array($id_questionnaire));
 	while ($don = $rep->fetch())
 	{
 		$num[$i] = $don['numero_question'];
@@ -618,20 +640,6 @@ function AjouterQuestionnaire($nom, $description)
 }
 
 /**
-*Fonction qui supprime un questionnaire de la bdd
-* @param integer $id_questionnaire
-*/
-
-function SupprimerQuestionnaire($id_questionnaire)
-{
-	global $bdd;
-	$req = bdd->prepare('DELETE FROM REPONSE WHERE id_question IN (SELECT id_question FROM QUESTION WHERE id_questionnaire = ?);
-			DELETE FROM QUESTION WHERE id_questionnaire IN (SELECT id_questionnaire FROM QUESTIONNAIRE WHERE id_questionnaire = ?);
-			DELETE FROM QUESTIONNAIRE WHERE id_questionnaire = ?');
-	$req->execute(array($id_questionnaire));
-}
-
-/**
 *Fonction qui retourne le nombre de point qu'a gagné l'étudiant pour cette réponse.
 * @param integer $id_utilisateur
 * @param integer $id_question
@@ -653,10 +661,10 @@ function GetPoints($id_utilisateur, $id_question)
 * @param integer $id_question
 * @return string
 */
-function getReponseProf($id_question)
+function GetReponseProf($id_question)
 {
 	global $bdd;
-	$req = $bdd->prepare('SELECT bonneReponse FROM QUESTION WHERE id_questionnaire = ?');
+	$req = $bdd->prepare('SELECT bonneReponse FROM QUESTION WHERE id_question = ?');
 	$req->execute(array($id_question));
 	$rep=$req->fetchObject();
 	$rep2=$rep->bonneReponse;
@@ -667,27 +675,69 @@ function getReponseProf($id_question)
 /**
 *Fonction qui retourne le résultat d'une requête sql
 * @param string $requete
-* @return array 
+* @return array ou rien
 */
 function ResultatRequete($requete)
 {
 	global $bdd;
-	$req = $bdd->exec('' .$requete);
-	$rep=$req->fetchObject();
-	$rep2=$rep;
-	$req->closeCursor();
-	return $rep2;
+	$req = $bdd->query($requete);
+	$i=0;
+	if (null != $bdd->query($requete))
+	{
+		while ($don = $req->fetch())
+		{
+			$rep[$i] = $don;
+			$i++;
+		}
+		$req->closeCursor();
+		return $rep;
+	}
 }
 
 /**
-*Fonction qui test l'exacte similitude entre deux tableaux
+*Fonction qui test l'exacte similitude entre deux tableaux de dimention 2
 * @param array $tab_etudiant
 * @param array $tab_prof
 * @return string
 */
-function EgalArray($tab_etudiant, $tab_prof)
+function EgalArrayD2($tab_etudiant, $tab_prof)
 {
-	if (count($tab_etudiant) == count($tab_prof))
+	$erreur = "false";
+	if (count($tab_etudiant) == count($tab_prof) && isset($tab_prof[0][0]) && isset($tab_etudiant[0][0]))
+	{
+		$i = 0;
+		$j = 0;
+		$erreur = "true";
+		while(isset($tab_prof[$i][$j]) && $erreur == "true")
+		{
+			while(isset($tab_prof[$i][$j]) && $erreur == "true")
+			{
+				if ($tab_prof[$i][$j] == $tab_etudiant[$i][$j])
+				{
+					$erreur = "true";
+				}
+				else
+				{
+					$erreur = "false";
+				}
+				$j++;
+			}
+			$i++;
+		}
+	}
+	return $erreur;
+}
+
+/**
+*Fonction qui test l'exacte similitude entre deux tableaux de dimention 1
+* @param array $tab_etudiant
+* @param array $tab_prof
+* @return string
+*/
+function EgalArrayD1($tab_etudiant, $tab_prof)
+{
+	$erreur = "false";
+	if (count($tab_etudiant) == count($tab_prof) && isset($tab_prof) && isset($tab_etudiant))
 	{
 		$i = 0;
 		$erreur = "true";
@@ -706,4 +756,25 @@ function EgalArray($tab_etudiant, $tab_prof)
 	}
 	return $erreur;
 }
+
+/**
+* Fonction qui renvoie la correction des requêtes des étudiants à une question.
+* @param integer $id_question
+* @return string-boolean ("true" or "false")
+*/
+function CorrectionAuto($id_question)
+{
+	$reponses = GetTousReponseReponse($_GET['id_question']);
+	$idUtilisateur = GetTousId_utilisateurReponse($_GET['id_question']);
+	$bonneRep = GetReponseProf($_GET['id_question']);
+
+	$i = 0;
+	while (isset($idUtilisateur[$i]))
+	{
+		$bonOuFaux[$i] = EgalArrayD2(ResultatRequete($reponses[$i]), ResultatRequete($bonneRep));
+		$i++;
+	}
+	return $bonOuFaux;
+}
+
 ?>

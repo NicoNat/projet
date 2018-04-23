@@ -11,7 +11,8 @@
 *Partie qui permet de supprimer une ou des questions du formulaire
 *Modification: Date/Initiales/Choses_modifiées
 *22 Mars 2018/MT/Modification de Enregistrer la réponse, avec différentiation de l'add et de l'update.
-*30 Mars 2018/MT/MOdification des noms de variables $_POST, mise en array.
+*30 Mars 2018/MT/Modification des noms de variables $_POST, mise en array.
+*22 Avril 2018/MT/Ajout d'une partie "bonne réponse", dans modifier et ajouter une question au formulaire.
 *
 */
 
@@ -68,7 +69,8 @@ $i = 0;
 				echo 'Id_question = ' .$id_question[$i] .' ' .GetTexteQuestion($id_question[$i]);
 				?>
 					</br>
-					<textarea name="modif[<?php echo $id_question[$i]; ?>]" rows="4" cols="45" ><?php echo GetTexteQuestion($id_question[$i]);?></textarea>
+					<textarea name="modif[<?php echo $id_question[$i]; ?>]" rows="4" cols="45"><?php echo GetTexteQuestion($id_question[$i]);?></textarea>
+					<textarea name="reponse[<?php echo $id_question[$i]; ?>]" rows="4" cols="45"><?php echo GetReponseProf($id_question[$i]);?></textarea>
 					<input type="number" name="numeroUpdate[<?php echo $id_question[$i]; ?>]" value="<?php echo GetNumero_questionQuestion($id_question[$i]); ?>">
 					<label>Numero de la question </label>
 					</br></br>
@@ -80,7 +82,7 @@ $i = 0;
 			</form>
 			<?php
 			/*
-			*Partie qui permet d'ajouter une questions du formulaire.
+			*Partie qui permet d'ajouter une questions et une réponse au formulaire.
 			*/
 			echo 'Ajouter:'
 
@@ -88,6 +90,7 @@ $i = 0;
 				</br></br>
 				<form action=update.php?type=add&amp;idquestionnaire=<?php echo $_GET['id_questionnaire'] ?> method="POST" >
 					<textarea name="add" rows="4" cols="45" >Ajoutez votre question</textarea>
+					<textarea name="addRep" rows="4" cols="45" >Ajoutez la réponse à votre question</textarea>
 					<input type="number" name="numeroAdd">
 					<p><input type="submit" name="valider" value="Valider votre ajout" href=""></p>
 				</form>
@@ -117,6 +120,8 @@ $i = 0;
 				</form>
 				</br></br>
 			<?php
+			SautLigneDansPhp(1);
+			echo '<a href="choix.php">retour</a>';
 		}
 			?>
     </body>
