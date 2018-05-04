@@ -44,6 +44,7 @@ $i = 0;
 <!DOCTYPE html>
 <html>
     <head>
+		<link href="css/styles.css" rel="stylesheet" type="text/css">
         <meta charset="utf-8" />
         <title>BDD</title>
     </head>
@@ -54,8 +55,14 @@ $i = 0;
 	/*
 	*Message de bienvenue à l'utilisateur.
 	*/
-	echo 'Bienvenue ' .$_SESSION['login'];
-
+	echo '<p class="header">Bienvenue ' .$_SESSION['login'].'</p>';
+	if($_SESSION['prof'] == 1)
+		{ echo '<p class="header2">Vous êtes prof</p>';
+			SautLigneDansPhp(1); }
+	else
+		{ echo '<p class="header2">Vous êtes étudiant</p>';
+			SautLigneDansPhp(1); }
+	
 	/*
 	*Affichage des formulaires.
 	*Connaître le nombre de formulaire pour connaitre le nombre de formulaire à afficher
@@ -76,22 +83,27 @@ $i = 0;
 			if($nbReponses == $nbQuestions && $nbQuestions != 0) //Si toutes les réponses sont faites, on ne donne pas accès
 			{
 				SautLigneDansPhp(1);
-				echo 'Formulaire' .$questionnaire[$i] .': ' .$nbReponses .'/' .$nbQuestions .' <a href="valider.php">Voir réponse</a>';
+				echo 'Formulaire' .$questionnaire[$i] .' ' .$nbReponses .'/' .$nbQuestions .' <a href="valider.php">Voir réponse</a>';
 			}
 			//Si toutes les questions n'ont pas leurs réponses, on donne accès à listequestion.php avec en paramètre le id_questionnaire du id_questionnaire
 			elseif($nbReponses < $nbQuestions)
 			{
 				?>
 					</br>
-					<a href="listequestions.php?id_questionnaire=<?php echo $questionnaire[$i] ?>">Formulaire <?php echo $questionnaire[$i] ?></a>
-				<?php
-					echo ': ' .$nbReponses .'/' .$nbQuestions;					
+					<table>
+						<tr><td>
+					<a href="listequestions.php?id_questionnaire=<?php echo $questionnaire[$i] ?>">Formulaire <?php echo $questionnaire[$i] ?></a></td>
+				<td> <?php
+					echo ' ' .$nbReponses .'/' .$nbQuestions; ?></td>
+				</tr>
+				</table>
+				<?php	
 			}
 			//Si c'est un formulaire sans question on affiche pas la possibilité de voir les réponses.
 			elseif (($nbReponses == $nbQuestions && $nbQuestions == 0))
 			{
 				SautLigneDansPhp(1);
-				echo 'Formulaire' .$questionnaire[$i] .': ' .$nbReponses .'/' .$nbQuestions;
+				echo 'Formulaire' .$questionnaire[$i] .' ' .$nbReponses .'/' .$nbQuestions;
 			}
 			//Si aucunes des deux propositions précédents, alors il y a un problème dans la matrice ^^
 			else
@@ -112,32 +124,44 @@ $i = 0;
 		//S'il est prof alors afficher sa partie
 		if($_SESSION['prof'] == 1)
 		{
-			echo 'Vous êtes prof';
-			SautLigneDansPhp(1);
-			echo 'Modifier un formulaire:';
+			echo '<p class="header">Modifier un formulaire</p>';
 			SautLigneDansPhp(2);
 			
 			//Affichage des formulaires
 			$id_questionnaire = GetTousId_questionnaireQuestionnaire();
 			$i = 0;
+			?> <table>
+						<tr>
+							<th><?php echo 'Formulaire' ?></th>
+							<th><?php echo 'Nom' ?></th>
+							<th><?php echo 'Description' ?></th>
+							<th><?php echo 'Souhaitez-vous...' ?></th>
+						</tr>
+				<tr>
+			<?php
+					
 			while(isset($id_questionnaire[$i]))
 			{
-				echo 'Formulaire: ' .$id_questionnaire[$i];
-				SautLigneDansPhp(1);
-				echo 'Nom: ' .GetNomQuestionnaire($id_questionnaire[$i]);
-				SautLigneDansPhp(1);
-				echo 'Description: ' .GetDescriptionQuestionnaire($id_questionnaire[$i]);
-				SautLigneDansPhp(1);
-				echo '<a href="modifier.php?id_questionnaire='.$id_questionnaire[$i].'">Modifier</a> / <a href="modifier.php?id_questionnaire='.$id_questionnaire[$i].'">Supprimer question</a> / <a href="corriger.php?id_questionnaire='.$id_questionnaire[$i].'">Corriger</a> / <a href="supprimer.php?id_questionnaire='.$id_questionnaire[$i].'">Supprimer questionnaire</a>';
-				SautLigneDansPhp(2);
+				?>
+				<td> <?php echo '' .$id_questionnaire[$i]; ?> </td>
+				<td> <?php
+				echo '' .GetNomQuestionnaire($id_questionnaire[$i]); ?> </td>
+				<td> <?php
+				echo '' .GetDescriptionQuestionnaire($id_questionnaire[$i]); ?> </td>
+				<td> <?php
+				echo '<a href="modifier.php?id_questionnaire='.$id_questionnaire[$i].'">Modifier</a> / <a href="modifier.php?id_questionnaire='.$id_questionnaire[$i].'">Supprimer question</a> / <a href="corriger.php?id_questionnaire='.$id_questionnaire[$i].'">Corriger</a> / <a href="supprimer.php?id_questionnaire='.$id_questionnaire[$i].'">Supprimer questionnaire</a>'; ?> </td>
+				<?php
 				$i++;
+				?> </tr>
+				<?php
 			}
+			?> </table> </br> <?php
 			echo '<a href="update.php?type=addQuestionnaire">Ajouter Questionnaire</a>';
 			?>
 			<form action="update.php?type=addQuestionnaire" method="POST" >
 				</br>
 					<textarea name="nom" rows="4" cols="45" >Nom du questionnaire</textarea>
-					<textarea name="description" rows="4" cols="45" >Descrition du questionnaire</textarea>
+					<textarea name="description" rows="4" cols="45" >Description du questionnaire</textarea>
 				</br></br>
 				<p><input type="submit" name="valider" value="Ajoutez votre questionnaire" href=""></p>
 			</form>
@@ -146,3 +170,4 @@ $i = 0;
 	?>
     </body>
 </html>
+
