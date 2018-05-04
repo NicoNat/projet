@@ -35,12 +35,13 @@ catch (Exception $e)
 <!DOCTYPE html>
 <html>
     <head>
+		<link href="css/styles.css" rel="stylesheet" type="text/css">
         <meta charset="utf-8" />
         <title>BDD</title>
     </head>
 
     <body>
-		<h1><?php echo htmlspecialchars($_SESSION['login']);?></h1>
+		<h1><?php echo htmlspecialchars($_SESSION['login']) ;?></h1>
 		<?php
 /*
 *Vérifier si la question à déjà une réponse de l'utilisateur.
