@@ -34,12 +34,39 @@ catch (Exception $e)
 *Affichage des questions de du questionnaire correspondant au numero id_questionnaire
 */
 //Recherche des questions correspondantes au questionnaire numero id_questionnaire
+
+?>
+<!DOCTYPE html>
+<html>
+    <head>
+		<link href="css/styles.css" rel="stylesheet" type="text/css">
+        <meta charset="utf-8" />
+        <title>BDD</title>
+    </head>
+
+    <body>
+	<?php
+echo '<p class="header">Formulaire ' .$_GET['id_questionnaire'].'</p>';
 $idQuestions = GetTousId_questionnQuestion($_GET["id_questionnaire"]);
 $i = 0;
+			?> </br>
+			<table>
+						<tr>
+							<th><?php echo 'Numéro question' ?></th>
+							<th><?php echo 'Question' ?></th>
+						</tr>
+				<tr>
+			<?php
 while(isset($idQuestions[$i]))
-{
-	echo "<li>"."<a href=\"formulaire1.php?id_questionnaire=".$_GET["id_questionnaire"]."&id_question=".$idQuestions[$i]."\">"."Question ".GetNumero_questionQuestion($idQuestions[$i])."</a>"." :\"".GetTexteQuestion($idQuestions[$i])."\"</li>";
+{	?>
+	<td> <?php echo "<a href=\"formulaire1.php?id_questionnaire=".$_GET["id_questionnaire"]."&id_question=".$idQuestions[$i]."\">"."Question ".GetNumero_questionQuestion($idQuestions[$i])."</a>" ?> </td>
+	<td> <?php echo '' .GetTexteQuestion($idQuestions[$i]); ?> </td>
+	<?php
 	$i++;
+	?> </tr><?php
 }
-echo '<a href="choix.php">retour</a>';
+?> </table> </br><?php
+echo '<a href="choix.php">Retour</a>';
 ?>
+</body>
+</html>
