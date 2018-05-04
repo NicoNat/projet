@@ -5,9 +5,30 @@ body {
  background: #eee;
 }
 
-#header {
- text-align:center;
- margin-top: 4em;
+.header {
+	margin: 0px;
+	padding: 24px;
+	background-color: #778899;
+	color: white;
+	text-align: center;
+	font-weight: bold;
+	font-size: 30px;
+}
+
+.header2 {
+	margin: 0px;
+	padding: 24px;
+	text-align: center;
+	font-weight: normal;
+	font-size: 20px;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+td, th {
+    border: 1px solid black;
 }
 
 h1, h2 { font-weight: 300; }
@@ -179,3 +200,4 @@ footer img {
 }
 
 footer img:focus , footer a:focus { outline: none; }
+
